@@ -33,9 +33,7 @@ describe('Tests', () => {
 
     describe('#Tests', () => {
         describe('#funcName', () => {
-            it('Should do smth', async () => {
-
-            });
+            it('Should do smth', async () => {});
         });
     });
 });
