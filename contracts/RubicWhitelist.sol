@@ -75,6 +75,10 @@ contract RubicWhitelist is Initializable {
         return whitelistedOperators.values();
     }
 
+    function isOperator(address _operator) external view returns (bool) {
+        return whitelistedOperators.contains(_operator);
+    }
+
     /**
      * @dev Appends new whitelisted cross chain addresses
      * @param _crossChains cross chain addresses to add
@@ -109,6 +113,10 @@ contract RubicWhitelist is Initializable {
 
     function getAvailableCrossChains() external view returns (address[] memory) {
         return whitelistedCrossChains.values();
+    }
+
+    function isWhitelistedCrossChain(address _crossChain) external view returns (bool) {
+        return whitelistedCrossChains.contains(_crossChain);
     }
 
     /**
@@ -147,6 +155,10 @@ contract RubicWhitelist is Initializable {
         return whitelistedDEXs.values();
     }
 
+    function isWhitelistedDEX(address _dex) external view returns (bool) {
+        return whitelistedDEXs.contains(_dex);
+    }
+
     /**
      * @dev Appends new whitelisted any router addresses of Multichain
      * @param _anyRouters any router addresses to add
@@ -164,8 +176,7 @@ contract RubicWhitelist is Initializable {
             }
         }
     }
-    
-    // TODO: black list
+
     /**
      * @dev Removes existing whitelisted any router addesses of Multichain
      * @param _anyRouters any router addresses to remove
@@ -182,6 +193,10 @@ contract RubicWhitelist is Initializable {
 
     function getAvailableAnyRouters() external view returns (address[] memory) {
         return whitelistedAnyRouters.values();
+    }
+
+    function isWhitelistedAnyRouter(address _anyRouter) external view returns (bool) {
+        return whitelistedAnyRouters.contains(_anyRouter);
     }
 
     function sendToken(address _token, uint256 _amount, address _receiver) internal {
