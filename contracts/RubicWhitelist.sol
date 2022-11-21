@@ -13,6 +13,7 @@ contract RubicWhitelist is Initializable {
 
     // AddressSet of whitelisted addresses
     EnumerableSetUpgradeable.AddressSet internal whitelistedOperators;
+    EnumerableSetUpgradeable.AddressSet internal blacklistedRouters;
 
     error NotAnOperator();
     error ZeroAddress();
@@ -197,6 +198,42 @@ contract RubicWhitelist is Initializable {
 
     function isWhitelistedAnyRouter(address _anyRouter) external view returns (bool) {
         return whitelistedAnyRouters.contains(_anyRouter);
+    }
+
+    /**
+     * @dev Appends new blacklisted router addresses
+     * @param _blackAddrs black list router addresses to add
+     */
+    function addToBlackList(address[] calldata _blackAddrs) external onlyOperator {
+        uint256 length = _blackAddrs.length;
+        for (uint256 i; i < length; ) {
+            blacklistedRouters.add(_blackAddrs[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    /**
+     * @dev Removes existing blacklisted router addresses
+     * @param _blackAddrs black list router addresses to remove
+     */
+    function removeFromBlackList(address[] calldata _blackAddrs) external onlyOperator {
+        uint256 length = _blackAddrs.length;
+        for (uint256 i; i < length; ) {
+            blacklistedRouters.remove(_blackAddrs[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    function getBlackList() external view returns (address[] memory) {
+        return blacklistedRouters.values();
+    }
+
+    function isBlacklisted(address _router) external view returns (bool) {
+        return blacklistedRouters.contains(_router);
     }
 
     function sendToken(address _token, uint256 _amount, address _receiver) internal {
