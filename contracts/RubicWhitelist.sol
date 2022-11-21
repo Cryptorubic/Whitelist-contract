@@ -19,7 +19,6 @@ contract RubicWhitelist is Initializable {
     error ZeroAddress();
     error Blacklisted();
     error CannotRemoveYourself();
-    error CannotAddYourself();
 
     EnumerableSetUpgradeable.AddressSet internal whitelistedCrossChains;
     EnumerableSetUpgradeable.AddressSet internal whitelistedDEXs;
@@ -49,7 +48,6 @@ contract RubicWhitelist is Initializable {
             if (_operators[i] == address(0)) {
                 revert ZeroAddress();
             }
-            if (_operators[i] == msg.sender) revert CannotAddYourself();
             whitelistedOperators.add(_operators[i]);
             unchecked {
                 ++i;

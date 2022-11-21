@@ -1,12 +1,5 @@
-import '@typechain/hardhat';
-import '@nomiclabs/hardhat-ethers';
-import '@nomiclabs/hardhat-waffle';
-import '@nomiclabs/hardhat-etherscan';
-import '@cronos-labs/hardhat-cronoscan';
+import '@nomicfoundation/hardhat-toolbox';
 import 'hardhat-contract-sizer';
-import 'hardhat-gas-reporter';
-import 'solidity-coverage';
-import '@openzeppelin/hardhat-upgrades';
 
 import { SolcUserConfig } from 'hardhat/types';
 
