@@ -19,9 +19,12 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
 
     // The main account which can grant roles
     address public admin;
+    // The address of a pending admin in transfer process
+    address public pendingAdmin;
 
     error NotAnOperator();
     error NotAnAdmin();
+    error NotPendingAdmin();
     error ZeroAddress();
     error Blacklisted();
     error CannotRemoveYourself();
@@ -29,6 +32,9 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
     EnumerableSetUpgradeable.AddressSet internal whitelistedCrossChains;
     EnumerableSetUpgradeable.AddressSet internal whitelistedDEXs;
     EnumerableSetUpgradeable.AddressSet internal whitelistedAnyRouters;
+
+    event TransferAdmin(address currentAdmin, address pendingAdmin);
+    event AcceptAdmin(address newAdmin);
 
     // reference to https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3347/
     modifier onlyOperator() {
@@ -101,6 +107,21 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
                 ++i;
             }
         }
+    }
+
+    function transferAdmin(address _admin) external onlyAdmin {
+        pendingAdmin = _admin;
+        emit TransferAdmin(msg.sender, _admin);
+    }
+
+    function acceptAdmin() external {
+        if(msg.sender != pendingAdmin) {
+            revert NotPendingAdmin();
+        }
+
+        admin = pendingAdmin;
+        pendingAdmin = address(0);
+        emit AcceptAdmin(msg.sender);
     }
 
     function getAvailableOperators() external view override returns (address[] memory) {
