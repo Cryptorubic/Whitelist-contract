@@ -34,7 +34,7 @@ contract RubicWhitelist is Initializable {
         if (!whitelistedOperators.contains(msg.sender)) revert NotAnOperator();
     }
 
-    function initialize() external initializer {
+    function initialize() public initializer {
         whitelistedOperators.add(msg.sender);
     }
 
