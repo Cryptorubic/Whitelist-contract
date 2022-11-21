@@ -27,7 +27,6 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
     error NotPendingAdmin();
     error ZeroAddress();
     error Blacklisted();
-    error CannotRemoveYourself();
 
     EnumerableSetUpgradeable.AddressSet internal whitelistedCrossChains;
     EnumerableSetUpgradeable.AddressSet internal whitelistedDEXs;
@@ -101,7 +100,6 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
     function removeOperators(address[] calldata _operators) external override onlyAdmin {
         uint256 length = _operators.length;
         for (uint256 i; i < length; ) {
-            if (_operators[i] == msg.sender) revert CannotRemoveYourself();
             whitelistedOperators.remove(_operators[i]);
             unchecked {
                 ++i;
