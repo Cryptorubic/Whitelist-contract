@@ -1,11 +1,12 @@
 {
   "name": "rubic-whitelist-contract",
-  "version": "1.0.1",
+  "version": "1.0.2-beta-2",
   "files": [
-    "contracts",
+    "contracts/interfaces",
     "artifacts/contracts/**/*.json",
-    "!artifacts/contracts/**/*.dbg.json",
-    "!artifacts/contracts/test/**/*"
+    "!artifacts/contracts/test/**/*",
+    "artifacts/contracts/test/WhitelistMock.sol/**/*",
+    "!artifacts/contracts/**/*.dbg.json"
   ],
   "scripts": {
     "lint": "./node_modules/.bin/solhint -f table contracts/**/*.sol && eslint test/** ",

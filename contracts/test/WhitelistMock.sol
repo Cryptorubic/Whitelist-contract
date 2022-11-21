@@ -2,13 +2,10 @@
 
 pragma solidity ^0.8.4;
 
-
 import '../RubicWhitelist.sol';
 
 contract WhitelistMock is RubicWhitelist {
-
     constructor() {
         initialize();
     }
-
 }
