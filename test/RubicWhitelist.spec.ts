@@ -3,7 +3,7 @@ import { loadFixture } from '@nomicfoundation/hardhat-network-helpers';
 import { Wallet } from '@ethersproject/wallet';
 import { TestERC20 } from '../typechain';
 import { expect } from 'chai';
-import { BigNumber as BN} from 'ethers';
+import { BigNumber as BN } from 'ethers';
 import * as consts from './shared/consts';
 import { testFixture } from './shared/fixtures';
 

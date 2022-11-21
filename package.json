@@ -1,11 +1,12 @@
 {
-  "name": "sample-project",
-  "version": "1.0.0",
-  "description": "",
-  "main": ".eslintrc.js",
-  "directories": {
-    "test": "test"
-  },
+  "name": "rubic-whitelist-contract",
+  "version": "1.0.1",
+  "files": [
+    "contracts",
+    "artifacts/contracts/**/*.json",
+    "!artifacts/contracts/**/*.dbg.json",
+    "!artifacts/contracts/test/**/*"
+  ],
   "scripts": {
     "lint": "./node_modules/.bin/solhint -f table contracts/**/*.sol && eslint test/** ",
     "format": "prettier --write contracts/**/*.sol && eslint test/** --fix",
