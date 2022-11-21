@@ -22,7 +22,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
     // The address of a pending admin in transfer process
     address public pendingAdmin;
 
-    error NotAnOperator();
+    error NotAnOperatorOrAdmin();
     error NotAnAdmin();
     error NotPendingAdmin();
     error ZeroAddress();
@@ -36,13 +36,13 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
     event AcceptAdmin(address newAdmin);
 
     // reference to https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3347/
-    modifier onlyOperator() {
-        checkIsOperator();
+    modifier onlyOperatorOrAdmin() {
+        checkIsOperatorOrAdmin();
         _;
     }
 
-    function checkIsOperator() internal view {
-        if (!whitelistedOperators.contains(msg.sender)) revert NotAnOperator();
+    function checkIsOperatorOrAdmin() internal view {
+        if (!whitelistedOperators.contains(msg.sender) || msg.sender != admin) revert NotAnOperatorOrAdmin();
     }
 
     modifier onlyAdmin() {
@@ -134,7 +134,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
      * @dev Appends new whitelisted cross chain addresses
      * @param _crossChains cross chain addresses to add
      */
-    function addCrossChains(address[] calldata _crossChains) external override onlyOperator {
+    function addCrossChains(address[] calldata _crossChains) external override onlyOperatorOrAdmin {
         uint256 length = _crossChains.length;
         for (uint256 i; i < length; ) {
             if (_crossChains[i] == address(0)) {
@@ -154,7 +154,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
      * @dev Removes existing whitelisted cross chain addesses
      * @param _crossChains cross chain addresses to remove
      */
-    function removeCrossChains(address[] calldata _crossChains) external override onlyOperator {
+    function removeCrossChains(address[] calldata _crossChains) external override onlyOperatorOrAdmin {
         uint256 length = _crossChains.length;
         for (uint256 i; i < length; ) {
             whitelistedCrossChains.remove(_crossChains[i]);
@@ -176,7 +176,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
      * @dev Appends new whitelisted DEX addresses
      * @param _dexs DEX addresses to add
      */
-    function addDEXs(address[] calldata _dexs) external override onlyOperator {
+    function addDEXs(address[] calldata _dexs) external override onlyOperatorOrAdmin {
         uint256 length = _dexs.length;
         for (uint256 i; i < length; ) {
             if (_dexs[i] == address(0)) {
@@ -196,7 +196,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
      * @dev Removes existing whitelisted DEX addesses
      * @param _dexs DEX addresses to remove
      */
-    function removeDEXs(address[] calldata _dexs) external override onlyOperator {
+    function removeDEXs(address[] calldata _dexs) external override onlyOperatorOrAdmin {
         uint256 length = _dexs.length;
         for (uint256 i; i < length; ) {
             whitelistedDEXs.remove(_dexs[i]);
@@ -218,7 +218,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
      * @dev Appends new whitelisted any router addresses of Multichain
      * @param _anyRouters any router addresses to add
      */
-    function addAnyRouters(address[] calldata _anyRouters) external override onlyOperator {
+    function addAnyRouters(address[] calldata _anyRouters) external override onlyOperatorOrAdmin {
         uint256 length = _anyRouters.length;
         for (uint256 i; i < length; ) {
             if (_anyRouters[i] == address(0)) {
@@ -238,7 +238,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
      * @dev Removes existing whitelisted any router addesses of Multichain
      * @param _anyRouters any router addresses to remove
      */
-    function removeAnyRouters(address[] calldata _anyRouters) external override onlyOperator {
+    function removeAnyRouters(address[] calldata _anyRouters) external override onlyOperatorOrAdmin {
         uint256 length = _anyRouters.length;
         for (uint256 i; i < length; ) {
             whitelistedAnyRouters.remove(_anyRouters[i]);
@@ -260,7 +260,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
      * @dev Appends new blacklisted router addresses
      * @param _blackAddrs black list router addresses to add
      */
-    function addToBlackList(address[] calldata _blackAddrs) external override onlyOperator {
+    function addToBlackList(address[] calldata _blackAddrs) external override onlyOperatorOrAdmin {
         uint256 length = _blackAddrs.length;
         for (uint256 i; i < length; ) {
             blacklistedRouters.add(_blackAddrs[i]);
@@ -274,7 +274,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
      * @dev Removes existing blacklisted router addresses
      * @param _blackAddrs black list router addresses to remove
      */
-    function removeFromBlackList(address[] calldata _blackAddrs) external override onlyOperator {
+    function removeFromBlackList(address[] calldata _blackAddrs) external override onlyOperatorOrAdmin {
         uint256 length = _blackAddrs.length;
         for (uint256 i; i < length; ) {
             blacklistedRouters.remove(_blackAddrs[i]);
@@ -300,7 +300,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
         }
     }
 
-    function sweepTokens(address _token, uint256 _amount) external onlyOperator {
+    function sweepTokens(address _token, uint256 _amount) external onlyOperatorOrAdmin {
         sendToken(_token, _amount, msg.sender);
     }
 
