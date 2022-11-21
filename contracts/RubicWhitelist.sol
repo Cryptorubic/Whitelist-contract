@@ -60,7 +60,7 @@ contract RubicWhitelist is Initializable {
      * @dev Removes existing whitelisted operators
      * @param _operators operators addresses to remove
      */
-    function removeOperators(address[] memory _operators) external onlyOperator {
+    function removeOperators(address[] calldata _operators) external onlyOperator {
         uint256 length = _operators.length;
         for (uint256 i; i < length; ) {
             if (_operators[i] == msg.sender) revert CannotRemoveYourself();
@@ -71,10 +71,117 @@ contract RubicWhitelist is Initializable {
         }
     }
 
-    // TODO add+remove
-
     function getAvailableOperators() external view returns (address[] memory) {
         return whitelistedOperators.values();
+    }
+
+    /**
+     * @dev Appends new whitelisted cross chain addresses
+     * @param _crossChains cross chain addresses to add
+     */
+    function addCrossChains(address[] calldata _crossChains) external onlyOperator {
+        uint256 length = _crossChains.length;
+        for (uint256 i; i < length; ) {
+            address _crossChain = _crossChains[i];
+            if (_crossChain == address(0)) {
+                revert ZeroAddress();
+            }
+            whitelistedCrossChains.add(_crossChain);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    /**
+     * @dev Removes existing whitelisted cross chain addesses
+     * @param _crossChains cross chain addresses to remove
+     */
+    function removeCrossChains(address[] calldata _crossChains) external onlyOperator {
+        uint256 length = _crossChains.length;
+        for (uint256 i; i < length; ) {
+            whitelistedCrossChains.remove(_crossChains[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    function getAvailableCrossChains() external view returns (address[] memory) {
+        return whitelistedCrossChains.values();
+    }
+
+    /**
+     * @dev Appends new whitelisted DEX addresses
+     * @param _dexs DEX addresses to add
+     */
+    function addDEXs(address[] calldata _dexs) external onlyOperator {
+        uint256 length = _dexs.length;
+        for (uint256 i; i < length; ) {
+            address _dex = _dexs[i];
+            if (_dex == address(0)) {
+                revert ZeroAddress();
+            }
+            whitelistedDEXs.add(_dex);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    /**
+     * @dev Removes existing whitelisted DEX addesses
+     * @param _dexs DEX addresses to remove
+     */
+    function removeDEXs(address[] calldata _dexs) external onlyOperator {
+        uint256 length = _dexs.length;
+        for (uint256 i; i < length; ) {
+            whitelistedDEXs.remove(_dexs[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    function getAvailableDEXs() external view returns (address[] memory) {
+        return whitelistedDEXs.values();
+    }
+
+    /**
+     * @dev Appends new whitelisted any router addresses of Multichain
+     * @param _anyRouters any router addresses to add
+     */
+    function addAnyRouters(address[] calldata _anyRouters) external onlyOperator {
+        uint256 length = _anyRouters.length;
+        for (uint256 i; i < length; ) {
+            address _anyRouter = _anyRouters[i];
+            if (_anyRouter == address(0)) {
+                revert ZeroAddress();
+            }
+            whitelistedAnyRouters.add(_anyRouter);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+    
+    // TODO: black list
+    /**
+     * @dev Removes existing whitelisted any router addesses of Multichain
+     * @param _anyRouters any router addresses to remove
+     */
+    function removeAnyRouters(address[] calldata _anyRouters) external onlyOperator {
+        uint256 length = _anyRouters.length;
+        for (uint256 i; i < length; ) {
+            whitelistedAnyRouters.remove(_anyRouters[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    function getAvailableAnyRouters() external view returns (address[] memory) {
+        return whitelistedAnyRouters.values();
     }
 
     function sendToken(address _token, uint256 _amount, address _receiver) internal {
