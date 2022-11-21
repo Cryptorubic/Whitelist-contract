@@ -54,10 +54,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
         if (msg.sender != admin) revert NotAnAdmin();
     }
 
-    function initialize(
-        address[] memory _operators,
-        address _admin
-    ) public initializer {
+    function initialize(address[] memory _operators, address _admin) public initializer {
         if (_admin == address(0)) {
             revert ZeroAddress();
         }
@@ -113,7 +110,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
     }
 
     function acceptAdmin() external {
-        if(msg.sender != pendingAdmin) {
+        if (msg.sender != pendingAdmin) {
             revert NotPendingAdmin();
         }
 
@@ -154,7 +151,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
      * @dev Removes existing whitelisted cross chain addesses
      * @param _crossChains cross chain addresses to remove
      */
-    function removeCrossChains(address[] calldata _crossChains) external override onlyOperatorOrAdmin {
+    function removeCrossChains(address[] calldata _crossChains) public override onlyOperatorOrAdmin {
         uint256 length = _crossChains.length;
         for (uint256 i; i < length; ) {
             whitelistedCrossChains.remove(_crossChains[i]);
@@ -196,7 +193,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
      * @dev Removes existing whitelisted DEX addesses
      * @param _dexs DEX addresses to remove
      */
-    function removeDEXs(address[] calldata _dexs) external override onlyOperatorOrAdmin {
+    function removeDEXs(address[] calldata _dexs) public override onlyOperatorOrAdmin {
         uint256 length = _dexs.length;
         for (uint256 i; i < length; ) {
             whitelistedDEXs.remove(_dexs[i]);
@@ -238,7 +235,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
      * @dev Removes existing whitelisted any router addesses of Multichain
      * @param _anyRouters any router addresses to remove
      */
-    function removeAnyRouters(address[] calldata _anyRouters) external override onlyOperatorOrAdmin {
+    function removeAnyRouters(address[] calldata _anyRouters) public override onlyOperatorOrAdmin {
         uint256 length = _anyRouters.length;
         for (uint256 i; i < length; ) {
             whitelistedAnyRouters.remove(_anyRouters[i]);
@@ -263,6 +260,14 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
     function addToBlackList(address[] calldata _blackAddrs) external override onlyOperatorOrAdmin {
         uint256 length = _blackAddrs.length;
         for (uint256 i; i < length; ) {
+            if (whitelistedDEXs.contains(_blackAddrs[i])) {
+                removeDEXs(_blackAddrs);
+            } else if (whitelistedCrossChains.contains(_blackAddrs[i])) {
+                removeCrossChains(_blackAddrs);
+            } else {
+                removeAnyRouters(_blackAddrs);
+            }
+
             blacklistedRouters.add(_blackAddrs[i]);
             unchecked {
                 ++i;

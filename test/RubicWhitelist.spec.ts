@@ -24,8 +24,8 @@ describe('TestOnlySource', () => {
     });
 
     describe('check opperators', () => {
-        it('check operator view', async () => {
-            await expect(await whitelist.getAvailableOperators()).to.be.deep.eq([owner.address]);
+        it('check operator view after deploy', async () => {
+            await expect(await whitelist.getAvailableOperators()).to.be.deep.eq([]);
         });
     });
 });
