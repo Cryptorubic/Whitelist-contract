@@ -17,6 +17,7 @@ contract RubicWhitelist is Initializable {
 
     error NotAnOperator();
     error ZeroAddress();
+    error Blacklisted();
     error CannotRemoveYourself();
     error CannotAddYourself();
 
@@ -89,6 +90,9 @@ contract RubicWhitelist is Initializable {
             if (_crossChains[i] == address(0)) {
                 revert ZeroAddress();
             }
+            if (blacklistedRouters.contains(_crossChains[i])) {
+                revert Blacklisted();
+            }
             whitelistedCrossChains.add(_crossChains[i]);
             unchecked {
                 ++i;
@@ -128,6 +132,9 @@ contract RubicWhitelist is Initializable {
             if (_dexs[i] == address(0)) {
                 revert ZeroAddress();
             }
+            if (blacklistedRouters.contains(_dexs[i])) {
+                revert Blacklisted();
+            }
             whitelistedDEXs.add(_dexs[i]);
             unchecked {
                 ++i;
@@ -166,6 +173,9 @@ contract RubicWhitelist is Initializable {
         for (uint256 i; i < length; ) {
             if (_anyRouters[i] == address(0)) {
                 revert ZeroAddress();
+            }
+            if (blacklistedRouters.contains(_anyRouters[i])) {
+                revert Blacklisted();
             }
             whitelistedAnyRouters.add(_anyRouters[i]);
             unchecked {
