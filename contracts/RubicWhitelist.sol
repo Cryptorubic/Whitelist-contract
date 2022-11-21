@@ -42,7 +42,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
     }
 
     function checkIsOperatorOrAdmin() internal view {
-        if (!whitelistedOperators.contains(msg.sender) || msg.sender != admin) revert NotAnOperatorOrAdmin();
+        if (!whitelistedOperators.contains(msg.sender) && msg.sender != admin) revert NotAnOperatorOrAdmin();
     }
 
     modifier onlyAdmin() {
