@@ -3,16 +3,26 @@
 pragma solidity ^0.8.4;
 
 import '@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/token/ERC20/utils/SafeERC20Upgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol';
+import '@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol';
 
-contract RubicWhitelist {
+contract RubicWhitelist is Initializable {
     using EnumerableSetUpgradeable for EnumerableSetUpgradeable.AddressSet;
-
+    using SafeERC20Upgradeable for IERC20Upgradeable;
 
     // AddressSet of whitelisted addresses
     EnumerableSetUpgradeable.AddressSet internal whitelistedOperators;
+    EnumerableSetUpgradeable.AddressSet internal blacklistedRouters;
 
     error NotAnOperator();
     error ZeroAddress();
+    error Blacklisted();
+    error CannotRemoveYourself();
+
+    EnumerableSetUpgradeable.AddressSet internal whitelistedCrossChains;
+    EnumerableSetUpgradeable.AddressSet internal whitelistedDEXs;
+    EnumerableSetUpgradeable.AddressSet internal whitelistedAnyRouters;
 
     // reference to https://github.com/OpenZeppelin/openzeppelin-contracts/pull/3347/
     modifier onlyOperator() {
@@ -24,6 +34,10 @@ contract RubicWhitelist {
         if (!whitelistedOperators.contains(msg.sender)) revert NotAnOperator();
     }
 
+    function initialize() external initializer {
+        whitelistedOperators.add(msg.sender);
+    }
+
     /**
      * @dev Appends new whitelisted operators
      * @param _operators operators addresses to add
@@ -31,11 +45,10 @@ contract RubicWhitelist {
     function addOperators(address[] calldata _operators) external onlyOperator {
         uint256 length = _operators.length;
         for (uint256 i; i < length; ) {
-            address _operator = _operators[i];
-            if (_operator == address(0)) {
+            if (_operators[i] == address(0)) {
                 revert ZeroAddress();
             }
-            whitelistedOperators.add(_operator);
+            whitelistedOperators.add(_operators[i]);
             unchecked {
                 ++i;
             }
@@ -46,13 +59,201 @@ contract RubicWhitelist {
      * @dev Removes existing whitelisted operators
      * @param _operators operators addresses to remove
      */
-    function removeOperators(address[] memory _operators) external onlyOperator {
+    function removeOperators(address[] calldata _operators) external onlyOperator {
         uint256 length = _operators.length;
         for (uint256 i; i < length; ) {
+            if (_operators[i] == msg.sender) revert CannotRemoveYourself();
             whitelistedOperators.remove(_operators[i]);
             unchecked {
                 ++i;
             }
         }
     }
+
+    function getAvailableOperators() external view returns (address[] memory) {
+        return whitelistedOperators.values();
+    }
+
+    function isOperator(address _operator) external view returns (bool) {
+        return whitelistedOperators.contains(_operator);
+    }
+
+    /**
+     * @dev Appends new whitelisted cross chain addresses
+     * @param _crossChains cross chain addresses to add
+     */
+    function addCrossChains(address[] calldata _crossChains) external onlyOperator {
+        uint256 length = _crossChains.length;
+        for (uint256 i; i < length; ) {
+            if (_crossChains[i] == address(0)) {
+                revert ZeroAddress();
+            }
+            if (blacklistedRouters.contains(_crossChains[i])) {
+                revert Blacklisted();
+            }
+            whitelistedCrossChains.add(_crossChains[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    /**
+     * @dev Removes existing whitelisted cross chain addesses
+     * @param _crossChains cross chain addresses to remove
+     */
+    function removeCrossChains(address[] calldata _crossChains) external onlyOperator {
+        uint256 length = _crossChains.length;
+        for (uint256 i; i < length; ) {
+            whitelistedCrossChains.remove(_crossChains[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    function getAvailableCrossChains() external view returns (address[] memory) {
+        return whitelistedCrossChains.values();
+    }
+
+    function isWhitelistedCrossChain(address _crossChain) external view returns (bool) {
+        return whitelistedCrossChains.contains(_crossChain);
+    }
+
+    /**
+     * @dev Appends new whitelisted DEX addresses
+     * @param _dexs DEX addresses to add
+     */
+    function addDEXs(address[] calldata _dexs) external onlyOperator {
+        uint256 length = _dexs.length;
+        for (uint256 i; i < length; ) {
+            if (_dexs[i] == address(0)) {
+                revert ZeroAddress();
+            }
+            if (blacklistedRouters.contains(_dexs[i])) {
+                revert Blacklisted();
+            }
+            whitelistedDEXs.add(_dexs[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    /**
+     * @dev Removes existing whitelisted DEX addesses
+     * @param _dexs DEX addresses to remove
+     */
+    function removeDEXs(address[] calldata _dexs) external onlyOperator {
+        uint256 length = _dexs.length;
+        for (uint256 i; i < length; ) {
+            whitelistedDEXs.remove(_dexs[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    function getAvailableDEXs() external view returns (address[] memory) {
+        return whitelistedDEXs.values();
+    }
+
+    function isWhitelistedDEX(address _dex) external view returns (bool) {
+        return whitelistedDEXs.contains(_dex);
+    }
+
+    /**
+     * @dev Appends new whitelisted any router addresses of Multichain
+     * @param _anyRouters any router addresses to add
+     */
+    function addAnyRouters(address[] calldata _anyRouters) external onlyOperator {
+        uint256 length = _anyRouters.length;
+        for (uint256 i; i < length; ) {
+            if (_anyRouters[i] == address(0)) {
+                revert ZeroAddress();
+            }
+            if (blacklistedRouters.contains(_anyRouters[i])) {
+                revert Blacklisted();
+            }
+            whitelistedAnyRouters.add(_anyRouters[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    /**
+     * @dev Removes existing whitelisted any router addesses of Multichain
+     * @param _anyRouters any router addresses to remove
+     */
+    function removeAnyRouters(address[] calldata _anyRouters) external onlyOperator {
+        uint256 length = _anyRouters.length;
+        for (uint256 i; i < length; ) {
+            whitelistedAnyRouters.remove(_anyRouters[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    function getAvailableAnyRouters() external view returns (address[] memory) {
+        return whitelistedAnyRouters.values();
+    }
+
+    function isWhitelistedAnyRouter(address _anyRouter) external view returns (bool) {
+        return whitelistedAnyRouters.contains(_anyRouter);
+    }
+
+    /**
+     * @dev Appends new blacklisted router addresses
+     * @param _blackAddrs black list router addresses to add
+     */
+    function addToBlackList(address[] calldata _blackAddrs) external onlyOperator {
+        uint256 length = _blackAddrs.length;
+        for (uint256 i; i < length; ) {
+            blacklistedRouters.add(_blackAddrs[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    /**
+     * @dev Removes existing blacklisted router addresses
+     * @param _blackAddrs black list router addresses to remove
+     */
+    function removeFromBlackList(address[] calldata _blackAddrs) external onlyOperator {
+        uint256 length = _blackAddrs.length;
+        for (uint256 i; i < length; ) {
+            blacklistedRouters.remove(_blackAddrs[i]);
+            unchecked {
+                ++i;
+            }
+        }
+    }
+
+    function getBlackList() external view returns (address[] memory) {
+        return blacklistedRouters.values();
+    }
+
+    function isBlacklisted(address _router) external view returns (bool) {
+        return blacklistedRouters.contains(_router);
+    }
+
+    function sendToken(address _token, uint256 _amount, address _receiver) internal {
+        if (_token == address(0)) {
+            AddressUpgradeable.sendValue(payable(_receiver), _amount);
+        } else {
+            IERC20Upgradeable(_token).safeTransfer(_receiver, _amount);
+        }
+    }
+
+    function sweepTokens(address _token, uint256 _amount) external onlyOperator {
+        sendToken(_token, _amount, msg.sender);
+    }
+
+    /**
+     * @dev Plain fallback function
+     */
+    fallback() external {}
 }

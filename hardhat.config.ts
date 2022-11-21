@@ -1,12 +1,5 @@
-import '@typechain/hardhat';
-import '@nomiclabs/hardhat-ethers';
-import '@nomiclabs/hardhat-waffle';
-import '@nomiclabs/hardhat-etherscan';
-import '@cronos-labs/hardhat-cronoscan';
+import '@nomicfoundation/hardhat-toolbox';
 import 'hardhat-contract-sizer';
-import 'hardhat-gas-reporter';
-import 'solidity-coverage';
-import '@openzeppelin/hardhat-upgrades';
 
 import { SolcUserConfig } from 'hardhat/types';
 
@@ -295,9 +288,9 @@ module.exports = {
             // moonbeam
             moonbeam: process.env.MOONBEAM_API_KEY,
             // moonriver
-            moonriver: process.env.MOONRIVER_API_KEY,
+            moonriver: process.env.MOONRIVER_API_KEY
         },
-        // apiKey: 
+        // apiKey:
         // `${KAVA}`,
         customChains: [
             {
@@ -341,12 +334,12 @@ module.exports = {
                 }
             },
             {
-              network: "moonbeam",
-              chainId: 1313161554,
-              urls: {
-                apiURL: "https://api.aurorascan.dev/api",
-                browserURL: "https://moonbeam.moonscan.io/"
-              }
+                network: 'moonbeam',
+                chainId: 1313161554,
+                urls: {
+                    apiURL: 'https://api.aurorascan.dev/api',
+                    browserURL: 'https://moonbeam.moonscan.io/'
+                }
             },
             {
                 network: 'boba',
