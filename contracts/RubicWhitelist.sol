@@ -17,7 +17,11 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
     EnumerableSetUpgradeable.AddressSet internal whitelistedOperators;
     EnumerableSetUpgradeable.AddressSet internal blacklistedRouters;
 
+    // The main account which can grant roles
+    address public admin;
+
     error NotAnOperator();
+    error NotAnAdmin();
     error ZeroAddress();
     error Blacklisted();
     error CannotRemoveYourself();
@@ -36,15 +40,42 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
         if (!whitelistedOperators.contains(msg.sender)) revert NotAnOperator();
     }
 
-    function initialize() public initializer {
-        whitelistedOperators.add(msg.sender);
+    modifier onlyAdmin() {
+        checkIsAdmin();
+        _;
+    }
+
+    function checkIsAdmin() internal view {
+        if (msg.sender != admin) revert NotAnAdmin();
+    }
+
+    function initialize(
+        address[] memory _operators,
+        address _admin
+    ) public initializer {
+        if (_admin == address(0)) {
+            revert ZeroAddress();
+        }
+
+        admin = _admin;
+
+        uint256 length = _operators.length;
+        for (uint256 i; i < length; ) {
+            if (_operators[i] == address(0)) {
+                revert ZeroAddress();
+            }
+            whitelistedOperators.add(_operators[i]);
+            unchecked {
+                ++i;
+            }
+        }
     }
 
     /**
      * @dev Appends new whitelisted operators
      * @param _operators operators addresses to add
      */
-    function addOperators(address[] calldata _operators) external override onlyOperator {
+    function addOperators(address[] calldata _operators) external override onlyAdmin {
         uint256 length = _operators.length;
         for (uint256 i; i < length; ) {
             if (_operators[i] == address(0)) {
@@ -61,7 +92,7 @@ contract RubicWhitelist is IRubicWhitelist, Initializable {
      * @dev Removes existing whitelisted operators
      * @param _operators operators addresses to remove
      */
-    function removeOperators(address[] calldata _operators) external override onlyOperator {
+    function removeOperators(address[] calldata _operators) external override onlyAdmin {
         uint256 length = _operators.length;
         for (uint256 i; i < length; ) {
             if (_operators[i] == msg.sender) revert CannotRemoveYourself();

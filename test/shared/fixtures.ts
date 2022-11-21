@@ -14,7 +14,10 @@ export const testFixture = async function (): Promise<TestFixture> {
 
     const whitelistFactory = await ethers.getContractFactory('WhitelistMock');
 
-    const whitelist = (await whitelistFactory.deploy()) as WhitelistMock;
+    const whitelist = (await whitelistFactory.deploy(
+        [],
+        await whitelistFactory.signer.getAddress()
+    )) as WhitelistMock;
 
     return { whitelist, tokenA, tokenB };
 };
