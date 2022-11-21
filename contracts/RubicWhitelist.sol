@@ -45,12 +45,11 @@ contract RubicWhitelist is Initializable {
     function addOperators(address[] calldata _operators) external onlyOperator {
         uint256 length = _operators.length;
         for (uint256 i; i < length; ) {
-            address _operator = _operators[i];
-            if (_operator == address(0)) {
+            if (_operators[i] == address(0)) {
                 revert ZeroAddress();
             }
             if (_operators[i] == msg.sender) revert CannotAddYourself();
-            whitelistedOperators.add(_operator);
+            whitelistedOperators.add(_operators[i]);
             unchecked {
                 ++i;
             }
@@ -87,11 +86,10 @@ contract RubicWhitelist is Initializable {
     function addCrossChains(address[] calldata _crossChains) external onlyOperator {
         uint256 length = _crossChains.length;
         for (uint256 i; i < length; ) {
-            address _crossChain = _crossChains[i];
-            if (_crossChain == address(0)) {
+            if (_crossChains[i] == address(0)) {
                 revert ZeroAddress();
             }
-            whitelistedCrossChains.add(_crossChain);
+            whitelistedCrossChains.add(_crossChains[i]);
             unchecked {
                 ++i;
             }
@@ -127,11 +125,10 @@ contract RubicWhitelist is Initializable {
     function addDEXs(address[] calldata _dexs) external onlyOperator {
         uint256 length = _dexs.length;
         for (uint256 i; i < length; ) {
-            address _dex = _dexs[i];
-            if (_dex == address(0)) {
+            if (_dexs[i] == address(0)) {
                 revert ZeroAddress();
             }
-            whitelistedDEXs.add(_dex);
+            whitelistedDEXs.add(_dexs[i]);
             unchecked {
                 ++i;
             }
@@ -167,11 +164,10 @@ contract RubicWhitelist is Initializable {
     function addAnyRouters(address[] calldata _anyRouters) external onlyOperator {
         uint256 length = _anyRouters.length;
         for (uint256 i; i < length; ) {
-            address _anyRouter = _anyRouters[i];
-            if (_anyRouter == address(0)) {
+            if (_anyRouters[i] == address(0)) {
                 revert ZeroAddress();
             }
-            whitelistedAnyRouters.add(_anyRouter);
+            whitelistedAnyRouters.add(_anyRouters[i]);
             unchecked {
                 ++i;
             }
