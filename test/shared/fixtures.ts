@@ -1,4 +1,4 @@
-import { TestERC20 } from '../../typechain';
+import { TestERC20, RubicWhitelist } from '../../typechain';
 import { ethers } from 'hardhat';
 
 interface TestFixture {
@@ -10,6 +10,8 @@ export const testFixture = async function (): Promise<TestFixture> {
     const tokenFactory = await ethers.getContractFactory('TestERC20');
     const tokenA = (await tokenFactory.deploy()) as TestERC20;
     const tokenB = (await tokenFactory.deploy()) as TestERC20;
+
+    
 
     return { tokenA, tokenB };
 };
