@@ -1,7 +1,8 @@
-import { TestERC20, RubicWhitelist } from '../../typechain';
+import { TestERC20, WhitelistMock } from '../../typechain';
 import { ethers } from 'hardhat';
 
 interface TestFixture {
+    whitelist: WhitelistMock;
     tokenA: TestERC20;
     tokenB: TestERC20;
 }
@@ -11,7 +12,9 @@ export const testFixture = async function (): Promise<TestFixture> {
     const tokenA = (await tokenFactory.deploy()) as TestERC20;
     const tokenB = (await tokenFactory.deploy()) as TestERC20;
 
-    
+    const whitelistFactory = await ethers.getContractFactory('WhitelistMock');
 
-    return { tokenA, tokenB };
+    const whitelist = (await whitelistFactory.deploy()) as WhitelistMock;
+
+    return { whitelist, tokenA, tokenB };
 };
