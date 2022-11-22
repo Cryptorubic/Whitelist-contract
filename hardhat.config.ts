@@ -1,5 +1,7 @@
 import '@nomicfoundation/hardhat-toolbox';
 import 'hardhat-contract-sizer';
+import '@openzeppelin/hardhat-upgrades';
+
 
 import { SolcUserConfig } from 'hardhat/types';
 
