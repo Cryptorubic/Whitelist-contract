@@ -1,11 +1,18 @@
 import '@nomicfoundation/hardhat-toolbox';
 import 'hardhat-contract-sizer';
-import '@openzeppelin/hardhat-upgrades';
-
+import * as upgrades from '@openzeppelin/hardhat-upgrades';
 
 import { SolcUserConfig } from 'hardhat/types';
 
 import * as dotenv from 'dotenv';
+import { ethers } from 'ethers';
+import { task } from 'hardhat/config';
+
+import {
+    abi as ABI,
+    bytecode as BYTECODE
+} from './artifacts/contracts/RubicWhitelist.sol/RubicWhitelist.json';
+
 dotenv.config();
 const DEFAULT_PRIVATE_KEY =
     process.env.MNEMONIC || '1000000000000000000000000000000000000000000000000000000000000000';
@@ -371,3 +378,51 @@ module.exports = {
         outputFile: 'reports/gas_usage/summary.txt'
     }
 };
+
+task('deploy').setAction(async () => {
+    const skipChains = [
+        'hardhat',
+        'ropsten',
+        'rinkeby',
+        'goerli',
+        'kovan',
+        'bscTest',
+        'polygonMumbai'
+    ];
+
+    const args = [
+        0,
+        0,
+        [],
+        [],
+        [],
+        '0x00009cc27c811a3e0FdD2Fd737afCc721B67eE8e',
+        '0xE82CEeD600481b28417f7941fCc51b9C04170417'
+    ];
+
+    const wallet = new ethers.Wallet(DEFAULT_PRIVATE_KEY);
+
+    for (let blockchain of Object.keys(module.exports.networks).filter(name => {
+        return !skipChains.includes(name);
+    })) {
+        const provider = new ethers.providers.JsonRpcProvider(
+            module.exports.networks[blockchain].url
+        );
+        const account = wallet.connect(provider);
+
+        const factory = new ethers.ContractFactory(ABI, BYTECODE, account);
+
+        const deploy = await upgrades.deployProxy(
+            factory,
+            [[], '0x0000006f0994c53C5D63E72dfA8Cf38412E874A4'],
+            { initialize: 'initialize' }
+        );
+
+        await deploy.deployed();
+
+        // await hre.run('verify:verify', {
+        //     address: '0xc7F5c6d4fd9E646C26D47AD6F214D0A5d9B4993D',
+        //     constructorArguments: args
+        // });
+    }
+});
