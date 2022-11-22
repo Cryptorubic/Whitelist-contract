@@ -2,15 +2,24 @@ module.exports = {
     root: true,
     overrides: [
         {
-            files: ['test/**/*.ts'],
+            files: ['./**/*.ts'],
             parser: '@typescript-eslint/parser',
             parserOptions: {
                 project: './tsconfig.json',
                 tsconfigRootDir: __dirname,
-                createDefaultProgram: true
+                createDefaultProgram: true,
+                sourceType: "module"
             },
-            plugins: ['@typescript-eslint', 'unused-imports', 'import'],
-            extends: ['airbnb-typescript/base', 'plugin:prettier/recommended', 'prettier'],
+            plugins: [
+                '@typescript-eslint',
+                'unused-imports',
+                'import'
+            ],
+            extends: [
+                'airbnb-typescript/base',
+                'plugin:prettier/recommended',
+                'prettier'
+            ],
             rules: {
                 'import/prefer-default-export': 'off',
                 '@typescript-eslint/no-useless-constructor': 'off',
@@ -47,7 +56,7 @@ module.exports = {
                         format: ['UPPER_CASE']
                     }
                 ],
-                'no-empty': ['error', { allowEmptyCatch: true }],
+                'no-empty': ['error', { 'allowEmptyCatch': true }],
                 // Styling.
                 'array-bracket-spacing': ['error', 'never'],
                 'object-curly-spacing': ['error', 'always'],
@@ -65,7 +74,11 @@ module.exports = {
                 radix: ['warn', 'as-needed'],
                 'no-prototype-builtins': 'off',
                 'no-return-assign': 'off',
-                'no-restricted-syntax': ['error', 'LabeledStatement', 'WithStatement'],
+                'no-restricted-syntax': [
+                    'error',
+                    'LabeledStatement',
+                    'WithStatement'
+                ],
                 'no-console': [
                     'warn',
                     {
@@ -77,6 +90,6 @@ module.exports = {
         }
     ],
     env: {
-        es6: true
-    }
+        "es6": true
+    },
 };
