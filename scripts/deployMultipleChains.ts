@@ -15,7 +15,12 @@ async function main() {
         'kovan',
         'bscTest',
         'polygonMumbai',
-        'defiKingdom'
+        'defiKingdom',
+        'polygon',
+        'fantom',
+        'bsc',
+        'eth',
+        'moonriver',
     ];
 
     const networks = hre.userConfig.networks;
@@ -33,7 +38,7 @@ async function main() {
             const onChain = Config.chains.find(_chain => _chain.id === network.config.chainId)!;
             const admin = onChain.admin
                 ? onChain.admin
-                : '0x00009cc27c811a3e0FdD2Fd737afCc721B67eE8e';
+                : '0xE19474aC8136349b568bbB7C0e9FFd90EC09Eeb9';
 
             console.log(`start deploy on ${clc.blue(blockchain)}`);
             const deploy = await upgrades.deployProxy(
