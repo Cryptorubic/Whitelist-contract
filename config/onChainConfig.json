@@ -197,7 +197,12 @@
         "id": 57,
         "name": "syscoin",
         "dex": ["0x017dAd2578372CAEE5c6CddfE35eEDB3728544C4"]
-      }
+      },
+      {
+        "id": 32520,
+        "name": "bitgert",
+        "dex": [ ]
+      },
     ]
   }
   
