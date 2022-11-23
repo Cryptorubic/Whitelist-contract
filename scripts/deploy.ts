@@ -6,7 +6,11 @@ async function main() {
     const factory = await hre.ethers.getContractFactory('RubicWhitelist');
     const onChain = Config.chains.find(_chain => _chain.id === network.config.chainId)!;
 
-    const deploy = await upgrades.deployProxy(factory, [[], '0x0000006f0994c53C5D63E72dfA8Cf38412E874A4'], {initialize: 'initialize'});
+    const deploy = await upgrades.deployProxy(
+        factory,
+        [[], '0x0000006f0994c53C5D63E72dfA8Cf38412E874A4'],
+        { initialize: 'initialize' }
+    );
 
     await deploy.deployed();
 
@@ -18,7 +22,7 @@ async function main() {
 
     await hre.run('verify:verify', {
         address: deploy.address,
-        constructorArguments: [ ]
+        constructorArguments: []
     });
 }
 

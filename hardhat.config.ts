@@ -1,11 +1,12 @@
 import '@nomicfoundation/hardhat-toolbox';
 import 'hardhat-contract-sizer';
 import '@openzeppelin/hardhat-upgrades';
-
+import 'hardhat-change-network';
 
 import { SolcUserConfig } from 'hardhat/types';
 
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 const DEFAULT_PRIVATE_KEY =
     process.env.MNEMONIC || '1000000000000000000000000000000000000000000000000000000000000000';

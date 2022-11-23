@@ -3,6 +3,7 @@
       {
         "id": 56,
         "name": "bsc",
+        "admin": "0xd57009C65D4923E7c03d61643e3bD34FB2E867EB",
         "dex": [
           "0x10ed43c718714eb63d5aa57b78b54704e256024e",
           "0xcf0febd3f17cef5b47b0cd257acf6025c5bff3b7",
@@ -16,6 +17,7 @@
       {
         "id": 1,
         "name": "eth",
+        "admin": "0xE5D47fC6186B77E314560aDc435FB93495c35717",
         "dex": [
           "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
           "0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F",
@@ -29,6 +31,7 @@
       {
         "id": 137,
         "name": "polygon",
+        "admin": "0xCeC1140D2451893Aa1a41a13328172f47aF211aa",
         "dex": [
           "0xa5e0829caced8ffdd4de3c43696c57f7d7a678ff",
           "0x1b02da8cb0d097eb8d57a175b88c7d8b47997506",
@@ -44,6 +47,7 @@
       {
         "id": 43114,
         "name": "avalanche",
+        "admin": "0x7BbEa69cc5164F3c8A77baDf558218465586cf47",
         "dex": [
           "0xe54ca86531e17ef3616d22ca28b0d458b6c89106",
           "0x1b02da8cb0d097eb8d57a175b88c7d8b47997506",
@@ -79,6 +83,7 @@
       {
         "id": 42161,
         "name": "arbitrum",
+        "admin": "0x71229576674eCCCc7ca1F4AeEDA93035Fc0b82Fb",
         "dex": [
           "0x1b02da8cb0d097eb8d57a175b88c7d8b47997506",
           "0xe592427a0aece92de3edee1f18e0157c05861564",
@@ -109,6 +114,7 @@
       {
         "id": 10,
         "name": "optimism",
+        "admin": "0x44fc0Fe5767cc5AaB198D02f364317bD4DF16Abb",
         "dex": [
           "0x362fa9d0bca5d19f743db50738345ce2b40ec99f",
           "0x1111111254eeb25477b68fb85ed929f73a960582"
@@ -122,6 +128,7 @@
       {
         "id": 1313161554,
         "name": "aurora",
+        "admin": "0x1D450D66D1C65Df61C4D27Be29b19020cDebE768",
         "dex": [
           "0x2cb45edb4517d5947afde3beabf95a582506858b",
           "0xa3a1ef5ae6561572023363862e238afa84c72ef5"
@@ -190,6 +197,11 @@
         "id": 57,
         "name": "syscoin",
         "dex": ["0x017dAd2578372CAEE5c6CddfE35eEDB3728544C4"]
+      },
+      {
+        "id": 32520,
+        "name": "bitgert",
+        "dex": [ ]
       }
     ]
   }
