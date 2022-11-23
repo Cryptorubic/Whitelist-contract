@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-loop-func */
+/* eslint-disable @typescript-eslint/no-magic-numbers */
+/* eslint-disable no-console */
 import hre, { ethers, network, upgrades } from 'hardhat';
 import { RubicWhitelist } from '../typechain';
 const clc = require('cli-color');
@@ -33,13 +36,34 @@ async function main() {
                 : '0x00009cc27c811a3e0FdD2Fd737afCc721B67eE8e';
 
             console.log(`start deploy on ${clc.blue(blockchain)}`);
-            const deploy = await upgrades.deployProxy(factory, [[], admin], {
-                initialize: 'initialize',
-                timeout: 0
-            });
+            const deploy = await upgrades.deployProxy(
+                factory,
+                [
+                    [
+                        '0xaE6FAf6C1c0006b81ce04308E225B01D9b667A6E',
+                        '0xE19474aC8136349b568bbB7C0e9FFd90EC09Eeb9' // deployer
+                    ],
+                    admin
+                ],
+                {
+                    initialize: 'initialize',
+                    timeout: 0 // wait infinietly
+                }
+            );
 
             console.log(`waiting on ${clc.blue(blockchain)}`);
             await deploy.deployed();
+
+            await deploy.addDEXs(onChain.dex);
+
+            await new Promise(r => setTimeout(r, 15000));
+
+            console.log(`waiting for verification on ${clc.blue(blockchain)} at ${deploy.address}`);
+
+            await hre.run('verify:verify', {
+                address: deploy.address,
+                constructorArguments: []
+            });
 
             console.log(`deployed in ${clc.blue(blockchain)} to:`, deploy.address);
         } catch (e) {
